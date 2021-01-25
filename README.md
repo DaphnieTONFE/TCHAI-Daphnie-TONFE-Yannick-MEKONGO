@@ -14,3 +14,5 @@
 (A3) Afficher une liste des transactions dans l’ordre chronologique liées à une personne donnée : def search() :
  
 (A4) Afficher le solde du compte de la personne donnée: def solde():
+
+##EXERCICE 4
