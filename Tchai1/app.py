@@ -1,31 +1,22 @@
-# This Python file uses the following encoding: utf-8
-# !/Users/yannickedouard/pythonProject/venv/bin/python
-# -*- coding: utf-8 -*-
-import hashlib
-
 from flask import *
 from operator import itemgetter
 from datetime import datetime
 
-from future.backports.urllib import request
-
 app = Flask(__name__)
-# app.decode(encoding= 'UTF-8', errors='strict')
 enregistrement_t = []
 resultSearch = []
 
 # ouverture de mon fichier base de données
-with open('bd.txt', encoding="utf8", errors='ignore') as file:
+with open('bd.txt', 'r') as file:
     # lecture des lignes
     for line in file:
         tuple = ()
         for word in line.split():
-            tuple = tuple + (str(word),)
+            tuple = tuple + (word,)
         enregistrement_t.append(tuple)
 file.close()
 
 
-# ordre chronologique
 @app.route('/')
 def tridate():
     # enregistrement_t.sort(key=lambda t: t[3])
@@ -34,7 +25,6 @@ def tridate():
     ) + '</ul>\n', 200
 
 
-# A3
 @app.route('/search')
 def PrintSearch():
     resultSearch.sort(key=lambda t: t[3])
@@ -55,21 +45,14 @@ def add():
         fichier = open("bd.txt", "a")
         fichier.write("\n")
         data = str(P1) + " " + str(P2) + " " + str(a) + " " + str(d)
-
-        # hachage
-        h = hashlib.sha256(bytes(data, encoding='utf-8')).hexdigest()
-        n = len(enregistrement_t)
-        h = h + enregistrement_t[n - 1][4]
-
-        fichier.write(data + " " + str(h))
-
+        fichier.write(data)
         fichier.close()
 
         enregistrement_t.append((str(P1), str(P2), str(a), str(d)))
         return redirect(url_for('tridate'))
 
 
-# enregistrement de la transaction lié à une personne
+# enregistrement de la transaction
 @app.route('/search/<name>')
 def search(name):
     # creation d'une autre liste
@@ -99,27 +82,6 @@ def solde(name):
     return affiche + ''.join(
         str(Solde)
     ), 200
-
-
-# verification de l'integrité
-@app.route('/integrite', methods=['POST', 'GET'])
-def integrity():
-    if request.method == 'POST':
-        P1 = request.values.get('P1')
-        P2 = request.values.get('P2')
-        d = request.values.get('d')
-        a = request.values.get('a')
-
-        data = str(P1) + " " + str(P2) + " " + str(a) + " " + str(d)
-
-        # hachage
-        h = hashlib.sha256(bytes(data, encoding='utf-8')).hexdigest()
-
-        for i in enregistrement_t:
-            if h == i[4]:
-                return 'la base de données est intègre'
-            if h != i[4]:
-                return 'la base de données pas intègre '
 
 
 # afficher une liste de transaction dans l'ordre chronologique
