@@ -66,7 +66,7 @@ def search(name):
         ['<li>' + format(n) for n in Personne_t]
     ) + '</ul>\n', 200
 
-
+#LA
 # affiche le solde d une personne
 @app.route('/solde/<name>')
 def solde(name):
